@@ -7,6 +7,8 @@
 
 A message bar notification component displayed at the top of the screen for React Native (Android and iOS) projects.
 
+Originally created by [KBLNY](https://github.com/KBLNY/) now maintained by [Talor Anderson](https://github.com/talor-a/)
+
 ![Screenshot](http://s31.postimg.org/cxq6x5srf/Untitled.gif)
 
 
@@ -125,11 +127,16 @@ MessageBarManager.showAlert({
   alertType: 'info', // Alert Type: you can select one of 'success', 'error', 'warning', 'error', or 'custom' (use custom if you use a 5th stylesheet, all are customizable). Default is 'info'
 
   /* Customize the stylesheets and/or provide an additional one 'extra' */
-  stylesheetInfo : {{ backgroundColor : '#007bff', strokeColor : '#006acd' }}, // Default are blue colors
-  stylesheetSuccess : {{ backgroundColor : 'darkgreen', strokeColor : '#b40000' }}, // Default are Green colors
-  stylesheetWarning : {{ backgroundColor : '#ff9c00', strokeColor : '#f29400' }}, // Default are orange colors
-  stylesheetError : {{ backgroundColor : '#ff3232', strokeColor : '#FF0000' }}, // Default are red colors
-  stylesheetExtra : {{ backgroundColor : 'black', strokeColor : 'gray' }}, // Default are blue colors, same as info
+  stylesheetInfo : {{ backgroundColor : '#007bff', strokeColor : '#006acd',
+                      titleColor: '#ffffff', messageColor: '#ffffff' }}, // Default are blue colors with white title and message
+  stylesheetSuccess : {{ backgroundColor : 'darkgreen', strokeColor : '#b40000',
+                         titleColor: '#ffffff', messageColor: '#ffffff' }}, // Default are Green colors with white title and message
+  stylesheetWarning : {{ backgroundColor : '#ff9c00', strokeColor : '#f29400',
+                         titleColor: '#ffffff', messageColor: '#ffffff' }}, // Default are orange colors with white title and message
+  stylesheetError : {{ backgroundColor : '#ff3232', strokeColor : '#FF0000',
+                         titleColor: '#ffffff', messageColor: '#ffffff' }}, // Default are red colors with white title and message
+  stylesheetExtra : {{ backgroundColor : 'black', strokeColor : 'gray',
+                         titleColor: '#ffffff', messageColor: '#ffffff' }}, // Default are blue colors with white title and message, same as info
 
   ...
 });
@@ -197,6 +204,32 @@ MessageBarManager.showAlert({
 ```
 
 
+## Setting default values for an alert reference
+Default values (for style etc.) can be set when `MessageBarAlert` is added to your render function e.g.:
+```javascript
+<MessageBarAlert
+  ref="alert"
+  titleStyle={{
+    fontSize: 36,
+    fontWeight: 'bold'
+  }}
+  messageStyle={{
+    fontSize: 28
+  }}
+  duration={6000}
+  viewTopOffset={10}
+  stylesheetSuccess={{
+    backgroundColor: '#52d80f',
+    strokeColor: '#43c90e',
+    titleColor: '#ffffff',
+    messageColor: '#ffffff'
+  }}
+/>
+```
+These values override the built-in default values and hold for all `MessageBarManager.showAlert()` calls on the same reference.
+All properties except `title`, `message`, `avatar`, and `alertType` can be set in render.
+
+
 ## Properties
 Prop                  | Type     | Default              | Description
 --------------------- | -------- | -------------------- | -----------
@@ -204,7 +237,7 @@ title                 | String   |                      | Title of the alert
 message               | String   |                      | Message of the alert
 avatar                | String   |                      | Avatar/Icon source/URL of the alert. Use <URL> for a remote image file (eg `avatar: 'http://mywebsite.com/myimage.jpg'`) or use `avatar: require('<path/to/my/local/image.extension>')` for a remote image file
 alertType             | String   | info                 | Alert Type: you can select one of 'success', 'error', 'warning', 'error', or 'custom' (use custom if you use a 5th stylesheet, all are customizable).
-duration              | Number   | 3000                 | Number of ms the alert is displayed  
+duration              | Number   | 3000                 | Number of ms the alert is displayed
 shouldHideAfterDelay  | Bool     | true                 | Tell the MessageBar whether or not it should hide after a delay defined in the `duration` property. If `false`, the MessageBar remain shown
 shouldHideOnTap       | Bool     | true                 | Tell the MessageBar whether or not it should hide or not when the user tap the alert. If `false`, the MessageBar will not hide, but the `onTapped` function is triggered, if defined. In addition, if `false`, the `onHide` function will not be triggered. The property `shouldHideAfterDelay` take precedence over `shouldHideOnTap`. That means if `shouldHideAfterDelay` is `false`, the value of `shouldHideOnTap` is not taken into account, since the MessageBar will not ever be hidden
 onTapped              | Function |                      | Callback function after alert is tapped
