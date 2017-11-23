@@ -15,6 +15,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  PanResponder
 } from 'react-native';
 
 let windowWidth = Dimensions.get('window').width
@@ -32,6 +33,26 @@ class MessageBar extends Component {
     this.timeoutHide = null;
 
     this.state = this.getStateByProps(props);
+
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return Math.abs(gestureState.dx) < 20 && Math.abs(gestureState.dy) >= 20;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dy < 0) {
+          this.setState({
+            viewTopOffset: gestureState.dy,
+          });
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        this.hideMessageBarAlert();
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        this.hideMessageBarAlert();
+      },
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -84,7 +105,7 @@ class MessageBar extends Component {
       durationToHide: props.durationToHide || 350,
 
       /* Offset of the View, useful if you have a navigation bar or if you want the alert be shown below another component instead of the top of the screen */
-      viewTopOffset: props.viewTopOffset || 0,
+      viewTopOffset: props.viewTopOffset || new Animated.Value(0),
       viewBottomOffset: props.viewBottomOffset || 0,
       viewLeftOffset: props.viewLeftOffset || 0,
       viewRightOffset: props.viewRightOffset || 0,
@@ -180,7 +201,10 @@ class MessageBar extends Component {
     this.alertShown = false;
 
     this._notifyAlertHidden();
-
+    Animated.timing(this.state.viewTopOffset,{
+      toValue: 0,
+      duration: 20
+    }).start()
     // Execute onHide callback if any
     this._onHide();
   }
@@ -361,7 +385,7 @@ class MessageBar extends Component {
     this._apllyAnimationTypeTransformation();
 
     return (
-      <Animated.View style={{ transform: this.animationTypeTransform, backgroundColor: this.state.backgroundColor, borderColor: this.state.strokeColor, borderBottomWidth: 1, position: 'absolute', top: this.state.viewTopOffset, bottom: this.state.viewBottomOffset, left: this.state.viewLeftOffset, right: this.state.viewRightOffset, paddingTop: this.state.viewTopInset, paddingBottom: this.state.viewBottomInset, paddingLeft: this.state.viewLeftInset, paddingRight: this.state.viewRightInset }}>
+      <Animated.View {...this._panResponder.panHandlers} style={{ transform: this.animationTypeTransform, backgroundColor: this.state.backgroundColor, borderColor: this.state.strokeColor, borderBottomWidth: 1, position: 'absolute', top: this.state.viewTopOffset, bottom: this.state.viewBottomOffset, left: this.state.viewLeftOffset, right: this.state.viewRightOffset, paddingTop: this.state.viewTopInset, paddingBottom: this.state.viewBottomInset, paddingLeft: this.state.viewLeftInset, paddingRight: this.state.viewRightInset }}>
         <TouchableOpacity onPress={()=>{this._alertTapped()}} style={{ flex: 1 }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', padding: 10 }} >
             { this.renderImage() }
