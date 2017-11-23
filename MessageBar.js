@@ -201,10 +201,6 @@ class MessageBar extends Component {
     this.alertShown = false;
 
     this._notifyAlertHidden();
-    Animated.timing(this.state.viewTopOffset,{
-      toValue: 0,
-      duration: 20
-    }).start()
     // Execute onHide callback if any
     this._onHide();
   }
