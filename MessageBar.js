@@ -26,7 +26,7 @@ class MessageBar extends Component {
       this._panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: (evt, gestureState) => {
-          return Math.abs(gestureState.dx) < 20 && Math.abs(gestureState.dy) >= 20;
+          return Math.abs(gestureState.dx) < 10 && Math.abs(gestureState.dy) >= 10;
         },
         onPanResponderMove: (evt, gestureState) => {
           if (gestureState.dy < 0) {
