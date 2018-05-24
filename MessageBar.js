@@ -69,14 +69,16 @@ class MessageBar extends Component {
   }
 
   setNewState (state) {
-    // Set the new state, this is triggered when the props of this MessageBar changed
-    this.setState(this.getStateByProps(state))
+    if (!this.alertShown) {
+      // Set the new state, this is triggered when the props of this MessageBar changed
+      this.setState(this.getStateByProps(state))
 
-    // Apply the colors of the alert depending on its alertType
-    this._applyAlertStylesheet(state.alertType)
+      // Apply the colors of the alert depending on its alertType
+      this._applyAlertStylesheet(state.alertType)
 
-    // Override the opposition style position regarding the state position in order to have the alert sticks that position
-    this._changeOffsetByPosition(state.position)
+      // Override the opposition style position regarding the state position in order to have the alert sticks that position
+      this._changeOffsetByPosition(state.position)
+    }
   }
 
   getStateByProps (props) {
